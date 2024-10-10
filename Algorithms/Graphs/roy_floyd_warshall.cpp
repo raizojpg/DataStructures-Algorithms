@@ -8,7 +8,7 @@ ofstream cout("royfloyd.out");
 
 int n, m, x, y, cost;
 
-vector<vector<int>>& roy_floyd_warshall(vector<vector<pair<int, int>>>& list) {
+vector<vector<int>> roy_floyd_warshall(vector<vector<pair<int, int>>>& list) {
 	vector<int> d(n + 1, INT_MAX);
 	vector<int> v(n + 1, 0);
 	vector<vector<int>> dist(n + 1, d);
