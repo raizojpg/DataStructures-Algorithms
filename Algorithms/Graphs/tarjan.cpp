@@ -9,23 +9,23 @@ ofstream cout("sortaret.out");
 
 int n, m, x, y;
 
-void tarjan_dfs(vector<vector<int>>& list, vector<int>& visited, int current, vector<int>& toposort) {
+void dfs(int current, vector<vector<int>>& list, vector<int>& visited, vector<int>& path) {
     visited[current] = 1;
     for (int node : list[current]) {
         if (visited[node] == 0) {
-            tarjan_dfs(list, visited, node, toposort);
+            dfs(node, list, visited, path);
         }
     }
-    toposort.push_back(current);
+    path.push_back(current);
 }
 
-vector<int> tarjan(vector<vector<int>>& list) {
+vector<int> tarjan_toposort(vector<vector<int>>& list) {
     vector<int> toposort;
     vector<int> visited(n + 1);
 
     for (int i = 1; i < list.size(); i++) {
         if (visited[i] == 0) {
-            tarjan_dfs(list, visited, i, toposort);
+            dfs(i, list, visited, toposort);
         }
     }
 
@@ -43,7 +43,7 @@ int main()
         list[x].push_back(y);
     }
 
-    vector<int> toposort = tarjan(list);
+    vector<int> toposort = tarjan_toposort(list);
 
     for (int& node : toposort) {
         cout << node << " ";
