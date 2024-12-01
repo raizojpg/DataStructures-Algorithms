@@ -58,7 +58,7 @@ bool compare_edge(edge& a, edge& b) {
 
 vector<edge> kruskal(vector<edge>& edges) {
 
-    DisjointSet set(edges.size() + 1);
+    DisjointSet set(n + 1);
     vector<edge> msp;
 
     sort(edges.begin(), edges.end(), compare_edge);
