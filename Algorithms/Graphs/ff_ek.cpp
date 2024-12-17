@@ -63,7 +63,7 @@ int maxflow(map<int, map<int, int>>& residual, int source = 1, int sink = n) {
         path[source] = 0;
         
         //dfs(source, INT_MAX, residual, path, flow);  // Ford-Fulkerson
-        bfs(residual, path, flow);                     // Endmond-Karp
+        bfs(residual, path, flow);                     // Edmond-Karp
         
         
         if (flow) {
