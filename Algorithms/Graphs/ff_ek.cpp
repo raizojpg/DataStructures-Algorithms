@@ -18,13 +18,13 @@ void dfs(int current, int flow, map<int, map<int, int>>& residual, vector<int>& 
         for (auto item : residual[current]) {
             int next = item.first;
             int val = item.second;
+
             if (path[next] == -1 && val != 0) {
                 path[next] = current;
                 int new_flow = min(flow, val);
                 dfs(next, new_flow, residual, path, sink_flow);
-                if (sink_flow != 0) {
-                    break;
-                }
+                if (sink_flow != 0) { break; }
+                path[next] = -1;
             }
         }
     }
@@ -63,24 +63,18 @@ int maxflow(map<int, map<int, int>>& residual, int source = 1, int sink = n) {
         path[source] = 0;
         
         //dfs(source, INT_MAX, residual, path, flow);  // Ford-Fulkerson
-        bfs(residual, path, flow);                     // Endmond-Karp
-        
-        
-        if (flow) {
-            result += flow;
-            int current = sink;
-            while (current != source) {
-                int prev = path[current];
-                residual[prev][current] -= flow;
-                residual[current][prev] += flow;
-                current = prev;
-            }
-        }
-        else{
-            break;
+        bfs(residual, path, flow);                     // Edmond-Karp
+        if (!flow) { break; }
+
+        result += flow;
+        int current = sink;
+        while (current != source) {
+            int prev = path[current];
+            residual[prev][current] -= flow;
+            residual[current][prev] += flow;
+            current = prev;
         }
     }
-
     return result;
 }
 
