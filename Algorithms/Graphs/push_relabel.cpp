@@ -21,6 +21,12 @@ struct node {
     int height;
 };
 
+struct compareFuncPairMax {
+    bool operator()(pair<int, int> a, pair<int, int> b) const {
+        return a.second < b.second;
+    }
+};
+
 void relabel(map<int, map<int, edge>>& mat, vector<node>& nodes, int node) {
     int mini = INT_MAX;
     for (auto& item : mat[node]) {
@@ -51,19 +57,20 @@ void push(map<int, map<int, edge>>& mat, vector<node>& nodes, int node, int next
 
 int maxflow(map<int, map<int, edge>>& mat, int source = 1, int sink = n) {
 
-    queue<int> q;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, compareFuncPairMax> pq; // node and height
     vector<node> nodes(n + 1, { 0,0 });
-    
+
     nodes[source].height = n;
     nodes[source].excess_flow = INT_MAX;
     for (auto& item : mat[source]) {
         int next = item.first;
         push(mat, nodes, source, next);
-        q.push(next);
+        pq.push({ next, 0 });
     }
 
-    while (!q.empty()) {
-        int node = q.front();
+    while (!pq.empty()) {
+        int node = pq.top().first;
+        pq.pop();
 
         for (auto& item : mat[node]) {
             int next = item.first;
@@ -74,17 +81,16 @@ int maxflow(map<int, map<int, edge>>& mat, int source = 1, int sink = n) {
             if (current.residual > 0 && nodes[node].height > nodes[next].height) {
                 push(mat, nodes, node, next);
                 if (next != source && next != sink) {
-                    q.push(next);
+                    pq.push({ next,nodes[next].height });
                 }
             }
         }
 
         if (nodes[node].excess_flow > 0) {
             relabel(mat, nodes, node);
+            pq.push({ node, nodes[node].height });
         }
-        else { q.pop(); }
     }
-
     return nodes[sink].excess_flow;
 }
 
