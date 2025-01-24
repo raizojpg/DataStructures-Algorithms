@@ -49,7 +49,11 @@ void push(map<int, map<int, edge>>& mat, vector<node>& nodes, int node, int next
     nodes[node].excess_flow -= pushed_flow;
 }
 
-void init(map<int, map<int, edge>>& mat, vector<node>& nodes, int source, queue<int>& q) {
+int maxflow(map<int, map<int, edge>>& mat, int source = 1, int sink = n) {
+
+    queue<int> q;
+    vector<node> nodes(n + 1, { 0,0 });
+    
     nodes[source].height = n;
     nodes[source].excess_flow = INT_MAX;
     for (auto& item : mat[source]) {
@@ -57,13 +61,6 @@ void init(map<int, map<int, edge>>& mat, vector<node>& nodes, int source, queue<
         push(mat, nodes, source, next);
         q.push(next);
     }
-}
-
-int maxflow(map<int, map<int, edge>>& mat, int source = 1, int sink = n) {
-
-    queue<int> q;
-    vector<node> nodes(n + 1, { 0,0 });
-    init(mat, nodes, source, q);
 
     while (!q.empty()) {
         int node = q.front();
@@ -94,7 +91,6 @@ int maxflow(map<int, map<int, edge>>& mat, int source = 1, int sink = n) {
 int main()
 {
     cin >> n >> m;
-    map<int, int> aux;
     map<int, map<int, edge>> mat;
 
     for (int i = 0; i < m; i++) {
