@@ -1,46 +1,47 @@
 #include <fstream>
 #include <vector>
 #include <stack>
+#include <map>
+#include <set>
 using namespace std;
 
-ifstream cin("euler.in");
-ofstream cout("euler.out");
+ifstream cin("ciclueuler.in");
+ofstream cout("ciclueuler.out");
 
 int n, m, x, y;
 
-vector<int> hierholzer(vector<vector<pair<int, int>>>& list, vector<int>& degrees, int start = 1) {
-
+vector<int> hierholzer(vector<vector<int>>& list, vector<pair<int,int>>& edges, vector<int>& degrees, int start = 1) {
+    
     for (int degree : degrees) {
         if (degree % 2 != 0) {
             return { -1 };
         }
     }
-
+    
+    vector<int> visited(m);
     vector<int> euler;
     stack<int> path;
     path.push(start);
     while (!path.empty()) {
-
+        
         int node = path.top();
-        if (!list[node].empty()) {
-            int size = list[node].size();
-            pair<int, int> edge = list[node][size - 1];
-            pair<int, int> reverse_edge = { edge.second,edge.first };
-
-            int next = edge.second;
-            path.push(next);
-
-            list[node].erase(list[node].begin() + size - 1);
-            for (int i = 0; i < list[next].size(); i++) {
-                if (list[next][i] == reverse_edge) {
-                    list[next].erase(list[next].begin() + i);
-                    break;
-                }
-            }
-        }
-        else {
+        if (list[node].empty()) {
             euler.push_back(node);
             path.pop();
+        }
+        else {
+            bool pushed = false;
+            while (!list[node].empty() && !pushed) {
+                int edge_index = list[node].back();
+                list[node].pop_back();
+
+                if (visited[edge_index] == 0) {
+                    visited[edge_index] = 1;
+                    int next = node ^ edges[edge_index].first ^ edges[edge_index].second;
+                    path.push(next);
+                    pushed = true;
+                }
+            }
         }
     }
     return euler;
@@ -49,23 +50,27 @@ vector<int> hierholzer(vector<vector<pair<int, int>>>& list, vector<int>& degree
 
 int main()
 {
-    cin >> n;
-    vector<vector<pair<int, int>>> list(n + 1);
+    cin >> n >> m;
+    vector<vector<int>> list(n + 1);
+    vector<pair<int, int>> edges(m);
     vector<int> degrees(n + 1);
 
-    while (cin >> x >> y) {
-        list[x].push_back({ x,y });
-        list[y].push_back({ y,x });
+    for (int i = 0; i < m; i++) {
+        cin >> x >> y;
+        list[x].push_back(i);
+        list[y].push_back(i);
+        edges[i] = { x,y };
         degrees[x]++;
         degrees[y]++;
     }
 
-    vector<int> euler_cicle = hierholzer(list, degrees);
+    vector<int> euler_cicle = hierholzer(list, edges, degrees);
 
-    cout << euler_cicle.size() << endl;
-    for (int i = 0; i < euler_cicle.size(); i++) {
-        cout << euler_cicle[i] << " ";
+    if (euler_cicle[0] == -1) { cout << "-1" << endl; }
+    else {
+        for (int i = 0; i < euler_cicle.size() - 1; i++) {
+            cout << euler_cicle[i] << " ";
+        }
+        cout << endl;
     }
-    cout << endl;
-
 }
