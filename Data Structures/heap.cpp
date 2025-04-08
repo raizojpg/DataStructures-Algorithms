@@ -22,18 +22,18 @@ public:
 			heap.erase(heap.begin() + heap.size() - 1);  // deleting it
 
 			long long ind = 1;
-			long long son = 2;
-			if (son < heap.size()) {
-				if (son + 1 < heap.size() && heap[son] > heap[son + 1]) {
-					son++;  // if there exist a second son that has a lower value we take him
+			long long child = 2;
+			if (child < heap.size()) {
+				if (child + 1 < heap.size() && heap[child] > heap[child + 1]) {
+					child++;  // if there exist a second child that has a lower value we take him
 				}
-				while (heap[son] < heap[ind]) {
-					swap(heap[son], heap[ind]);
-					ind = son;
-					son = ind * 2;
-					if (son >= heap.size()) { break; }  // we reached the end
-					if (son + 1 < heap.size() && heap[son] > heap[son + 1]) {
-						son++;	// if there exist a second son that has a lower value we take him
+				while (heap[child] < heap[ind]) {
+					swap(heap[child], heap[ind]);
+					ind = child;
+					child = ind * 2;
+					if (child >= heap.size()) { break; }  // we reached the end
+					if (child + 1 < heap.size() && heap[child] > heap[child + 1]) {
+						child++;	// if there exist a second child that has a lower value we take him
 					}
 				}
 			}
